@@ -1,6 +1,7 @@
 ﻿using GameOfLife;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,12 +13,12 @@ namespace GameOfLife
         private int maxColumns;
         private int maxRows;
         private  Cell[,] _cell;
-
+        private Cell[,] _newGeneration;
         public Universe(int rows, int columns)
         {
-            maxRows = rows;
-            maxColumns = columns;
-           _cell = new Cell[rows, columns];
+            this.maxRows = rows;
+            this.maxColumns = columns;
+           this._cell = new Cell[rows, columns];
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < columns; j++)
@@ -25,6 +26,13 @@ namespace GameOfLife
                     _cell[i,j] = new Cell(false);
                 }
             }
+        }
+
+        public Universe(int rows,int columns,Cell[,] cells)
+        {
+            this.maxRows = rows;
+            this.maxColumns = columns;
+            this._cell = cells;
         }
 
         public override string ToString()
@@ -63,6 +71,23 @@ namespace GameOfLife
                     }
             }
             return count;
+        }
+
+        public Universe EnforceRules()
+        {
+            Rules rule = new Rules();
+            _newGeneration = new Cell[maxRows,maxColumns];
+            for (int i = 0; i < maxRows; i++)
+            {
+                for (int j = 0; j < maxColumns; j++)
+                {
+                    _cell[i, j] = rule.OverPopulation(_cell[i, j], CountLiveNeighbours(i, j));
+                    _cell[i, j] = rule.UnderPopulation(_cell[i, j], CountLiveNeighbours(i, j));
+                    _cell[i, j] = rule.Exactlt3Neighbour(_cell[i, j], CountLiveNeighbours(i, j));
+                    _newGeneration[i, j] = _cell[i, j];
+                }
+            }
+            return new Universe(maxRows,maxColumns,_newGeneration);
         }
 
         public void seed(string[,] strings)

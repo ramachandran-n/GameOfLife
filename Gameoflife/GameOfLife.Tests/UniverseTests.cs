@@ -36,14 +36,40 @@ namespace GameOfLife.Tests
             Assert.That(neighbourCount,Is.EqualTo(3));
         }
 
-        //[Test]
-        //public void ShouldCountNeighbours3x3()
-        //{
-        //    Universe universe = new Universe(3, 3);
-        //    universe.seed(new string[,] { { "x", "x","x"} , { "x", "x", "x" } , { "x", "x", "x" } });
-        //    int neighbourCount = universe.CountLiveNeighbours(0, 0);
-        //    Assert.That(neighbourCount, Is.EqualTo(3));
-        //}
+        [Test]
+        public void ShouldApplyRulesAllAlive()
+        {
+            Universe universe = new Universe(2, 2);
+            universe.seed(new string[,] { { "x", "x" }, { "x", "x" } });
+            universe = universe.EnforceRules();
+            Assert.That(universe.ToString(), Is.EqualTo(("x x \nx x \n")));
+        }
+
+        [Test]
+        public void ShouldApplyRulesOnly2ALive()
+        {
+            Universe universe = new Universe(2, 2);
+            universe.seed(new string[,] { { "x", "-" }, { "x", "-" } });
+            universe = universe.EnforceRules();
+            Assert.That(universe.ToString(), Is.EqualTo(("- - \n- - \n")));
+        }
+        [Test]
+        public void ShouldApplyRulesOnlyBeALive()
+        {
+            Universe universe = new Universe(2, 2);
+            universe.seed(new string[,] { { "x", "x" }, { "x", "-" } });
+            universe = universe.EnforceRules();
+            Assert.That(universe.ToString(), Is.EqualTo(("x x \nx x \n")));
+        }
+
+        [Test]
+        public void ShouldApplyRulesAllDead()
+        {
+            Universe universe = new Universe(2, 2);
+            universe.seed(new string[,] { { "x", "-" }, { "-", "-" } });
+            universe = universe.EnforceRules();
+            Assert.That(universe.ToString(), Is.EqualTo(("- - \n- - \n")));
+        }
 
     }
 }

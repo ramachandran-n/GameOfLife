@@ -34,5 +34,6 @@ namespace GameOfLife
         {
             return IsAlive() ? "x" : "-";
         }
+
     }
 }
